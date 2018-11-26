@@ -11,20 +11,29 @@ from threading import Thread
 allFiles=[]
 users=[]
 def RX(conn,ip,addr):
+    lista=[]
     while True:
         msg=str(conn.recv(10000))
         if msg.split()[0]=="-i":
+            lista=[]
             for i in msg[3:].split("###")[1:-1]:
                 allFiles.append([i,conn,ip,addr])
         elif msg.split()[0]=="-s":
             lista=[]
             for i in allFiles:
                 if i[0].count(msg[3:])>=1:
-                    lista.append(i[0])
+                    lista.append(i)
             string="-r "        
             for i in lista:
-                string+="###"+str(i)
+                string+="###"+str(i[0])
             conn.send(string)
+        elif msg.split()[0]=="-d":
+            index=int(msg[3:])-1
+            string="-c "+str(lista[index][2])
+            conn.send(string)
+            
+            
+            
                     
             
             

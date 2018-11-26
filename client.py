@@ -8,7 +8,6 @@ Created on Mon Nov 26 09:02:39 2018
 import os
 import socket
 from threading import Thread
-import time
 
 def RX(s):
     while True:
@@ -20,6 +19,8 @@ def RX(s):
             for i in lista[1:]:
                 print "[",counter,"] ",i
                 counter+=1
+        if msg.split()[0]=="-c":
+            print "el ip: ",msg[3:], "tiene el archivo"
             
 
         
@@ -31,6 +32,7 @@ def TX(s):
     while True:
         a=raw_input("input:")
         s.send(a)
+        
 
 host=socket.gethostname()
 port=1995
