@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 Created on Mon Nov 26 09:02:39 2018
 
@@ -20,13 +21,12 @@ def RX(s):
                 counter+=1
         if msg.split()[0]=="-c":
             filename=msg[8:]
-            print msg
-            #Thread(target=Download,args=(msg.split()[1],filename)).start()
+            Thread(target=Download,args=(msg.split()[1],filename)).start()
         
         if msg.split()[0]=="-u":
-            #filename=msg[]
-            print msg
-            #Thread(target=Seed,args=(msg.split()[1],filename)).start()
+            sep=" "
+            filename=sep.join(msg.split()[3:])
+            Thread(target=Seed,args=(msg.split()[1],msg.split()[2],filename)).start()
             
             
 
@@ -46,20 +46,28 @@ def Download(port,filename):
     ds.bind((host,int(port)))
     ds.listen(1)
     seed, address=ds.accept()
-    f=open(filename,'wb')
+    f = open('myFiles/'+filename,'wb')
     while True:
-        msg=seed.recv(1024)
-        f.write(msg)
+        data = seed.recv(4096)
+        if not data:
+            break
+        f.write(data)
+    print "archivo descargado"
+        
+    f.close()
+    seed.close()
+        
         
 def Seed(port,ip,filename):
     ss=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
     host=ip
-    ss.connect((host,port))
-    path="/myFiles/"+filename
+    ss.connect((host,int(port)))
+    path='myFiles/'+filename
     f=open(path,'rb')
-    while True:
-        l=f.read(1024)
-        ss.send(l)
+    l=f.read()
+    ss.send(l)
+    f.close()
+    ss.close()
         
     
 host=socket.gethostname()
