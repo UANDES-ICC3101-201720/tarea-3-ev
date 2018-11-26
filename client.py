@@ -4,7 +4,6 @@ Created on Mon Nov 26 09:02:39 2018
 
 @author: Emilio
 """
-
 import os
 import socket
 from threading import Thread
@@ -20,7 +19,15 @@ def RX(s):
                 print "[",counter,"] ",i
                 counter+=1
         if msg.split()[0]=="-c":
-            print "debes conectarte con el ip "+msg.split()[2]+" mediante el port "+msg.split()[1]
+            filename=msg[8:]
+            print msg
+            #Thread(target=Download,args=(msg.split()[1],filename)).start()
+        
+        if msg.split()[0]=="-u":
+            #filename=msg[]
+            print msg
+            #Thread(target=Seed,args=(msg.split()[1],filename)).start()
+            
             
 
         
@@ -33,7 +40,28 @@ def TX(s):
         a=raw_input("input:")
         s.send(a)
         
-
+def Download(port,filename):
+    ds=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+    host=socket.gethostname()
+    ds.bind((host,int(port)))
+    ds.listen(1)
+    seed, address=ds.accept()
+    f=open(filename,'wb')
+    while True:
+        msg=seed.recv(1024)
+        f.write(msg)
+        
+def Seed(port,ip,filename):
+    ss=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+    host=ip
+    ss.connect((host,port))
+    path="/myFiles/"+filename
+    f=open(path,'rb')
+    while True:
+        l=f.read(1024)
+        ss.send(l)
+        
+    
 host=socket.gethostname()
 port=1995
 
