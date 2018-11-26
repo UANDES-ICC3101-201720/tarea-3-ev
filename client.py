@@ -20,7 +20,7 @@ def RX(s):
                 print "[",counter,"] ",i
                 counter+=1
         if msg.split()[0]=="-c":
-            print "el ip: ",msg[3:], "tiene el archivo"
+            print "debes conectarte con el ip "+msg.split()[2]+" mediante el port "+msg.split()[1]
             
 
         
